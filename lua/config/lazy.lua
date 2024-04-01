@@ -21,14 +21,15 @@ end
 
 lazy.setup({
     spec = {
-	{ 'ellisonleao/gruvbox.nvim' },
-
-	{ 'nvim-telescope/telescope.nvim', 
-	    tag = "0.1.6", 
-	    dependencies = { 
-	        'nvim-lua/plenary.nvim' 
-	    } 
-	}
+        { 'ellisonleao/gruvbox.nvim' },
+        { 'tpope/vim-fugitive' },
+        { 'theprimeagen/harpoon' },
+        { 'nvim-telescope/telescope.nvim', 
+            tag = "0.1.6", 
+            dependencies = { 
+                'nvim-lua/plenary.nvim' 
+            } 
+        },
     }
 })
 
