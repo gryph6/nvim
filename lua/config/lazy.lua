@@ -28,7 +28,7 @@ lazy.setup({
                 'nvim-lua/plenary.nvim'
             }
         },
-
+--[[
         { 'liuchengxu/vista.vim' },
         
         -- LSP
@@ -39,6 +39,7 @@ lazy.setup({
         {'L3MON4D3/LuaSnip'},
         {'williamboman/mason.nvim'},
         {'williamboman/mason-lspconfig.nvim'},
+]]--
     }
 })
 
