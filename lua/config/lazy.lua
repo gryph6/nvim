@@ -22,12 +22,23 @@ lazy.setup({
         { 'ellisonleao/gruvbox.nvim' },
         { 'tpope/vim-fugitive' },
         { 'theprimeagen/harpoon' },
-        { 'nvim-telescope/telescope.nvim', 
-            tag = "0.1.6", 
-            dependencies = { 
-                'nvim-lua/plenary.nvim' 
-            } 
+        { 'nvim-telescope/telescope.nvim',
+            tag = "0.1.6",
+            dependencies = {
+                'nvim-lua/plenary.nvim'
+            }
         },
+
+        { 'liuchengxu/vista.vim' },
+        
+        -- LSP
+        {'VonHeikemen/lsp-zero.nvim', branch = 'v3.x'},
+        {'neovim/nvim-lspconfig'},
+        {'hrsh7th/cmp-nvim-lsp'},
+        {'hrsh7th/nvim-cmp'},
+        {'L3MON4D3/LuaSnip'},
+        {'williamboman/mason.nvim'},
+        {'williamboman/mason-lspconfig.nvim'},
     }
 })
 
