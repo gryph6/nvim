@@ -20,6 +20,7 @@ end
 lazy.setup({
     spec = {
         { 'ellisonleao/gruvbox.nvim' },
+        { 'rebelot/kanagawa.nvim' },
         { 'tpope/vim-fugitive' },
         { 'theprimeagen/harpoon' },
         { 'nvim-telescope/telescope.nvim',

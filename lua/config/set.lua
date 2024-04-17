@@ -26,3 +26,5 @@ vim.opt.updatetime = 50
 vim.opt.signcolumn = 'no' -- auto/yes/no
 
 vim.opt.clipboard = 'unnamedplus'
+
+vim.opt.shortmess:append { I = true }
