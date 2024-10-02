@@ -59,10 +59,10 @@ end
 lazy.setup({
     spec = {
         { 'ellisonleao/gruvbox.nvim' },
-        { 'rebelot/kanagawa.nvim' },
         { 'tpope/vim-fugitive' },
         { 'petertriho/nvim-scrollbar' },
-	{ 'preservim/tagbar' },
+        { 'nvim-treesitter/nvim-treesitter' },
+        { 'nvim-treesitter/nvim-treesitter-context' },
         { 'nvim-telescope/telescope.nvim',
             tag = "0.1.6",
             dependencies = {
