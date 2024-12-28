@@ -165,17 +165,40 @@ lazy.setup({
             'petertriho/nvim-scrollbar',
             config = config_scrollbar
         },
-        { 'nvim-treesitter/nvim-treesitter' },
+        { 
+            'nvim-treesitter/nvim-treesitter' 
+        },
+        --[[
         { 
             'nvim-treesitter/nvim-treesitter-context',
             config = config_treesitter_context
         },
-        { 'nvim-telescope/telescope.nvim',
+        ]]--
+        { 
+            'nvim-telescope/telescope.nvim',
             tag = "0.1.6",
             dependencies = {
                 'nvim-lua/plenary.nvim'
             },
             config = config_telescope,
+        },
+        {
+            'nvim-lualine/lualine.nvim',
+            dependencies = { 'nvim-tree/nvim-web-devicons' }
+        },
+        {
+            "declancm/cinnamon.nvim",
+            opts = {
+                keymaps = {
+                    -- Enable the provided 'basic' keymaps
+                    basic = true,
+                    -- Enable the provided 'extra' keymaps
+                    extra = true,
+                },
+                options = {
+                    mode = "window",
+                }
+            },
         },
         
         -- LSP --
