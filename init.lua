@@ -58,86 +58,6 @@ vim.g.maplocalleader = " "
 vim.keymap.set("n", "<C-n>", vim.cmd.Ex)
 
 --
--- Plugin Configuration Functions
---
-
-function config_gruvbox()
-    vim.cmd.colorscheme("gruvbox")
-end
-
-function config_fugitive()
-    vim.keymap.set("n", "<leader>git", '<cmd>below G<cr>')
-end
-
-function config_scrollbar()
-    require("scrollbar").setup()
-end
-
-function config_treesitter_context()
-    require("treesitter-context").setup({
-        enable = false, -- Enable this plugin (Can be enabled/disabled later via commands)
-        max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
-        min_window_height = 0, -- Minimum editor window height to enable context. Values <= 0 mean no limit.
-        line_numbers = true,
-        multiline_threshold = 20, -- Maximum number of lines to show for a single context
-        trim_scope = 'outer', -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
-        mode = 'cursor',  -- Line used to calculate context. Choices: 'cursor', 'topline'
-        -- Separator between context and content. Should be a single character string, like '-'.
-        -- When separator is set, the context will only show up when there are at least 2 lines above cursorline.
-        separator = nil,
-        zindex = 20, -- The Z-index of the context window
-        on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
-    })
-end
-
-function config_telescope()
-    local builtin = require("telescope.builtin")
-
-    vim.keymap.set('n', '<C-p>', builtin.git_files, {})
-    vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
-    vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
-    vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
-    vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
-end
-
-function config_lualine()
-    require("lualine").setup({
-        options = { 
-            section_separators = '', 
-            component_separators = '' 
-        }
-    })
-end
-
-function config_lsp_zero()
-    local lsp_zero = require('lsp-zero')
-    lsp_zero.extend_lspconfig()
-
-    lsp_zero.on_attach(function(_, bufnr)
-      -- see :help lsp-zero-keybindings
-      -- to learn the available actions
-      lsp_zero.default_keymaps({buffer = bufnr})
-    end)
-end
-
--- to learn how to use mason.nvim with lsp-zero
--- read this: https://github.com/VonHeikemen/lsp-zero.nvim/blob/v3.x/doc/md/guide/integrate-with-mason-nvim.md
-function config_mason()
-    require('mason').setup({})
-end
-
-function config_mason_lspconfig()
-    local lsp_zero = require('lsp-zero')
-
-    require('mason-lspconfig').setup({
-      ensure_installed = {},
-      handlers = {
-        lsp_zero.default_setup,
-      },
-    })
-end
-
---
 -- Bootstrap Plugin Manager
 --
 
@@ -164,67 +84,120 @@ lazy.setup({
     spec = {
         { 
             'ellisonleao/gruvbox.nvim',
-            config = config_gruvbox
+            config = function()
+                vim.cmd.colorscheme("gruvbox")
+            end
         },
         { 
             'tpope/vim-fugitive',
-            config = config_fugitive
+            config = function()
+                vim.keymap.set("n", "<leader>git", '<cmd>below G<cr>')
+            end
         },
         { 
             'petertriho/nvim-scrollbar',
-            config = config_scrollbar
+            config = function()
+                require("scrollbar").setup()
+            end
         },
         { 
-            'nvim-treesitter/nvim-treesitter' 
-        },
-        { 
-            'nvim-treesitter/nvim-treesitter-context',
-            config = config_treesitter_context
+            'nvim-treesitter/nvim-treesitter',
+            config = function()
+                require("nvim-treesitter.configs").setup({})
+            end
         },
         { 
             'nvim-telescope/telescope.nvim',
-            tag = "0.1.6",
             dependencies = {
                 'nvim-lua/plenary.nvim'
             },
-            config = config_telescope,
+            config = function()
+                local builtin = require("telescope.builtin")
+
+                vim.keymap.set('n', '<C-p>', builtin.git_files, {})
+                vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
+                vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
+                vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
+                vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
+            end
+        },
+        {
+            "declancm/cinnamon.nvim",
+            config = function()
+                require("cinnamon").setup({
+                    keymaps = {
+                        basic = true,
+                        extra = false,
+                    },
+                    options = {
+                        mode = "window",
+                    }
+                })
+            end
         },
         {
             'nvim-lualine/lualine.nvim',
             dependencies = { 'nvim-tree/nvim-web-devicons' },
-            config = config_lualine,
+            config = function()
+                require('lualine').setup({
+                    options = {
+                        component_separators = '',
+                        section_separators = '',
+                        always_show_tabline = false,
+                    },
+                    sections = {
+                        lualine_a = {'mode'},
+                        lualine_b = {},
+                        lualine_c = {},
+                        lualine_x = {},
+                        lualine_y = {},
+                        lualine_z = {'location'}
+                    },
+                    tabline = {
+                        lualine_a = {
+                            {'tabs', mode = 1 }
+                        },
+                    },
+                })
+            end
         },
         {
-            "declancm/cinnamon.nvim",
-            opts = {
-                keymaps = {
-                    basic = true,
-                    extra = true,
-                },
-                options = {
-                    mode = "window",
-                }
+          'saghen/blink.cmp',
+          version = 'v0.*',
+          config = function()
+              require('blink.cmp').setup({
+                  keymap = { 
+                      preset = 'default' 
+                  },
+                  appearance = {
+                      use_nvim_cmp_as_default = true,
+                      nerd_font_variant = 'mono'
+                  },
+                  signature = { 
+                      enabled = true 
+                  },
+                  completion = {
+                      menu = {
+                          auto_show = function(ctx)
+                              return ctx.mode ~= 'cmdline'
+                          end
+                      }
+                  }
+              })
+          end
+        },
+        {
+            "neovim/nvim-lspconfig",
+            dependencies = {
+              'saghen/blink.cmp',
             },
-        },
-        
-        -- LSP --
-        {
-            'VonHeikemen/lsp-zero.nvim', 
-            branch = 'v3.x',
-            priority = 100,
-            config = config_lsp_zero
-        },
-        {'neovim/nvim-lspconfig'},
-        {'hrsh7th/cmp-nvim-lsp'},
-        {'hrsh7th/nvim-cmp'},
-        {
-            'williamboman/mason.nvim',
-            config = config_mason
-        },
-        {
-            'williamboman/mason-lspconfig.nvim',
-            config = config_mason_lspconfig
-        },
+            config = function()
+                local lspconfig = require('lspconfig')
+                local capabilities = require('blink.cmp').get_lsp_capabilities()
+
+                lspconfig.clangd.setup({ capabilitiies = capabilities })
+            end
+        }
     }
 })
 
