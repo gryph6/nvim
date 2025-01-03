@@ -131,6 +131,9 @@ lazy.setup({
                     },
                     options = {
                         mode = "window",
+                        step_size = {
+                            vertical = 3
+                        }
                     }
                 })
             end
