@@ -165,29 +165,29 @@ lazy.setup({
             end
         },
         {
-          'saghen/blink.cmp',
-          version = 'v0.*',
-          config = function()
-              require('blink.cmp').setup({
-                  keymap = { 
-                      preset = 'default' 
-                  },
-                  appearance = {
-                      use_nvim_cmp_as_default = true,
-                      nerd_font_variant = 'mono'
-                  },
-                  signature = { 
-                      enabled = true 
-                  },
-                  completion = {
-                      menu = {
-                          auto_show = function(ctx)
-                              return ctx.mode ~= 'cmdline'
-                          end
-                      }
-                  }
-              })
-          end
+            'saghen/blink.cmp',
+            version = 'v0.*',
+            config = function()
+                require('blink.cmp').setup({
+                    keymap = { 
+                        preset = 'default' 
+                    },
+                    appearance = {
+                        use_nvim_cmp_as_default = true,
+                        nerd_font_variant = 'mono'
+                    },
+                    signature = { 
+                        enabled = true 
+                    },
+                    completion = {
+                        menu = {
+                            auto_show = function(ctx)
+                                return ctx.mode ~= 'cmdline'
+                            end
+                        }
+                    }
+                })
+            end
         },
         {
             "neovim/nvim-lspconfig",
@@ -199,6 +199,7 @@ lazy.setup({
                 local capabilities = require('blink.cmp').get_lsp_capabilities()
 
                 lspconfig.clangd.setup({ capabilitiies = capabilities })
+                lspconfig.rust_analyzer.setup({ capabilities = capabilities })
             end
         }
     }
