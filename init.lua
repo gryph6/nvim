@@ -28,7 +28,7 @@ vim.opt.scrolloff = 8
 
 vim.opt.updatetime = 50
 
-vim.opt.signcolumn = 'no' -- auto/yes/no
+vim.opt.signcolumn = 'yes' -- auto/yes/no
 
 -- Use System Clipboard --
 vim.opt.clipboard = 'unnamedplus'
@@ -40,8 +40,20 @@ vim.opt.foldlevel = 20
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 
+vim.o.updatetime = 250
+
+-- Diagnostics --
+vim.diagnostic.config({
+  virtual_text = false,
+  signs = true,
+  underline = true,
+  update_in_insert = false,
+})
+
+-- Floating panel on error hover --
+vim.cmd [[autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false})]]
+
 -- 80 char limit in C files --
--- vim.opt.cc = "80"
 vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"}, {
     pattern = { "C:/Users/griffinS/git/Xbox.AccessoriesFirmware/src/XboxGameControllerDriver/*" },
     command = "match Error /\\%80v.\\+/",
@@ -86,6 +98,7 @@ lazy.setup({
             'ellisonleao/gruvbox.nvim',
             config = function()
                 vim.cmd.colorscheme("gruvbox")
+                vim.api.nvim_set_hl(0, "SignColumn", {})
             end
         },
         { 
