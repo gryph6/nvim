@@ -215,10 +215,7 @@ lazy.setup({
                 local lspconfig = require('lspconfig')
                 local capabilities = require('blink.cmp').get_lsp_capabilities()
 
-                lspconfig.clangd.setup({ 
-                    capabilitiies = capabilities,
-                    root_dir = lspconfig.util.root_pattern('.clangd'),
-                })
+                lspconfig.clangd.setup({ capabilitiies = capabilities })
                 lspconfig.rust_analyzer.setup({ capabilities = capabilities })
             end
         },
