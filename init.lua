@@ -2,34 +2,7 @@
 -- NVIM Config
 --
 
---
---  Global Settings
--- 
-
-vim.g.editorconfig = false 
-
-
---
---  Netrw Config
--- 
-
--- This hides the netrw banner
--- vim.g.netrw_banner = 0
-
--- This makes the listing style tree-like
-vim.g.netrw_liststyle = 3
-
--- This opens the file in the main (previous) Vim window rather than in the netrw window
--- vim.g.netrw_browse_split = 4
-
--- This makes the netrw window size only a quarter of the screen's width
--- vim.g.netrw_winsize = 25
-
-
---
 -- Set Line Numbers
---
-
 vim.opt.number = true
 
 
