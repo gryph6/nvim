@@ -2,8 +2,36 @@
 -- NVIM Config
 --
 
--- Set Line Numbers --
+--
+--  Global Settings
+-- 
+
+vim.g.editorconfig = false 
+
+
+--
+--  Netrw Config
+-- 
+
+-- This hides the netrw banner
+-- vim.g.netrw_banner = 0
+
+-- This makes the listing style tree-like
+vim.g.netrw_liststyle = 3
+
+-- This opens the file in the main (previous) Vim window rather than in the netrw window
+-- vim.g.netrw_browse_split = 4
+
+-- This makes the netrw window size only a quarter of the screen's width
+-- vim.g.netrw_winsize = 25
+
+
+--
+-- Set Line Numbers
+--
+
 vim.opt.number = true
+
 
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
@@ -66,7 +94,12 @@ vim.api.nvim_create_autocmd({"CursorHold", "CursorHoldI"}, {
 
 -- 80 char limit in C files --
 vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"}, {
-    pattern = { "C:/Users/griffinS/git/Xbox.AccessoriesFirmware/src/XboxGameControllerDriver/*" },
+    pattern = { 
+        "C:/Users/griffinS/git/Xbox.AccessoriesFirmware/src/XboxGameControllerDriver/*.c",
+        "C:/Users/griffinS/git/Xbox.AccessoriesFirmware/src/XboxGameControllerDriver/*.h",
+        "C:/os/src/gamecore/xbc/net/xvn/xvnpf/*.c",
+        "C:/os/src/gamecore/xbc/net/xvn/xvnpf/*.h"
+    },
     command = "match Error /\\%80v.\\+/",
 })
 
@@ -150,23 +183,6 @@ lazy.setup({
             end
         },
         {
-            "declancm/cinnamon.nvim",
-            config = function()
-                require("cinnamon").setup({
-                    keymaps = {
-                        basic = true,
-                        extra = false,
-                    },
-                    options = {
-                        mode = "window",
-                        step_size = {
-                            vertical = 3
-                        }
-                    }
-                })
-            end
-        },
-        {
             'nvim-lualine/lualine.nvim',
             dependencies = { 'nvim-tree/nvim-web-devicons' },
             config = function()
@@ -174,7 +190,7 @@ lazy.setup({
                     options = {
                         component_separators = '',
                         section_separators = '',
-                        always_show_tabline = false,
+                        always_show_tabline = true,
                     },
                     sections = {
                         lualine_a = {'mode'},
@@ -226,8 +242,17 @@ lazy.setup({
                 local lspconfig = require('lspconfig')
                 local capabilities = require('blink.cmp').get_lsp_capabilities()
 
-                lspconfig.clangd.setup({ capabilitiies = capabilities })
+                lspconfig.clangd.setup({ 
+                    capabilitiies = capabilities,
+                    root_dir = lspconfig.util.root_pattern('.clangd'),
+                })
                 lspconfig.rust_analyzer.setup({ capabilities = capabilities })
+            end
+        },
+        {
+            "github/copilot.vim",
+            config = function()
+                vim.cmd.Copilot("disable")
             end
         }
     }
