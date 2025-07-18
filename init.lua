@@ -28,7 +28,7 @@ vim.opt.scrolloff = 8
 
 vim.opt.updatetime = 50
 
-vim.opt.signcolumn = 'yes' -- auto/yes/no
+vim.opt.signcolumn = "yes:1" 
 
 -- Use System Clipboard --
 vim.opt.clipboard = 'unnamedplus'
@@ -44,14 +44,25 @@ vim.o.updatetime = 250
 
 -- Diagnostics --
 vim.diagnostic.config({
-  virtual_text = false,
-  signs = true,
-  underline = true,
   update_in_insert = false,
+  virtual_text = false,
+  underline = true,
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = "●", 
+      [vim.diagnostic.severity.WARN] = "●", 
+      [vim.diagnostic.severity.INFO] = "●", 
+      [vim.diagnostic.severity.HINT] = "●", 
+    },
+  },
 })
 
 -- Floating panel on error hover --
-vim.cmd [[autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false})]]
+vim.api.nvim_create_autocmd({"CursorHold", "CursorHoldI"}, {
+    callback = function()
+        vim.diagnostic.open_float(nil, {focus=false})
+    end
+})
 
 -- 80 char limit in C files --
 vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"}, {
@@ -98,7 +109,11 @@ lazy.setup({
             'ellisonleao/gruvbox.nvim',
             config = function()
                 vim.cmd.colorscheme("gruvbox")
-                vim.api.nvim_set_hl(0, "SignColumn", {})
+                vim.cmd.highlight("clear SignColumn")
+                vim.cmd.highlight("link DiagnosticSignError DiagnosticError")
+                vim.cmd.highlight("link DiagnosticSignWarn DiagnosticWarn")
+                vim.cmd.highlight("link DiagnosticSignInfo DiagnosticInfo")
+                vim.cmd.highlight("link DiagnosticSignHint DiagnosticHint")
             end
         },
         { 
