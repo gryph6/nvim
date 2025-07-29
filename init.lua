@@ -234,7 +234,7 @@ vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"}, {
         "C:/os/src/gamecore/xbc/net/xvn/xvnpf/*.c",
         "C:/os/src/gamecore/xbc/net/xvn/xvnpf/*.h"
     },
-    command = "match Error /\\%80v.\\+/",
+    command = "match @comment.error /\\%80v.\\+/",
 })
 
 -- Enable Copilot for work files.
