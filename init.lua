@@ -5,7 +5,6 @@
 -- Set Line Numbers
 vim.opt.number = true
 
-
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
@@ -31,19 +30,19 @@ vim.opt.updatetime = 50
 
 vim.opt.signcolumn = "yes:1" 
 
--- Use System Clipboard --
+-- Use System Clipboard
 vim.opt.clipboard = 'unnamedplus'
 
 vim.opt.shortmess:append { I = true }
 
--- Code Folding --
+-- Code Folding
 vim.opt.foldlevel = 20
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 
 vim.o.updatetime = 250
 
--- Diagnostics --
+-- Diagnostics
 vim.diagnostic.config({
   update_in_insert = false,
   virtual_text = false,
@@ -58,14 +57,32 @@ vim.diagnostic.config({
   },
 })
 
--- Floating panel on error hover --
+vim.api.nvim_create_autocmd("VimEnter", {
+    callback = function()
+        vim.cmd.colorscheme("kanagawa")
+
+        vim.cmd.highlight("clear SignColumn")
+        vim.cmd.highlight("LineNr guibg=NONE")
+
+        vim.cmd.highlight("clear DiagnosticSignError")
+        vim.cmd.highlight("link DiagnosticSignError DiagnosticError")
+        vim.cmd.highlight("clear DiagnosticSignWarn")
+        vim.cmd.highlight("link DiagnosticSignWarn DiagnosticWarn")
+        vim.cmd.highlight("clear DiagnosticSignInfo")
+        vim.cmd.highlight("link DiagnosticSignInfo DiagnosticInfo")
+        vim.cmd.highlight("clear DiagnosticSignHint")
+        vim.cmd.highlight("link DiagnosticSignHint DiagnosticHint")
+    end,
+})
+
+-- Floating panel on error hover
 vim.api.nvim_create_autocmd({"CursorHold", "CursorHoldI"}, {
     callback = function()
         vim.diagnostic.open_float(nil, {focus=false})
     end
 })
 
--- 80 char limit in C files --
+-- 80 char limit in C files
 vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"}, {
     pattern = { 
         "C:/Users/griffinS/git/Xbox.AccessoriesFirmware/src/XboxGameControllerDriver/*.c",
@@ -76,20 +93,18 @@ vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"}, {
     command = "match Error /\\%80v.\\+/",
 })
 
--- Set Leader Key --
+-- Set Leader Key
 local map = vim.api.nvim_set_keymap
 local silent = { silent = true, noremap = true }
 map("", "<Space>", "<Nop>", silent)
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
--- Keybinding for File Explorer --
+-- Keybinding for File Explorer
 vim.keymap.set("n", "<C-n>", vim.cmd.Ex)
 
---
--- Bootstrap Plugin Manager
---
 
+-- Bootstrap Plugin Manager
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
   vim.fn.system({
@@ -103,25 +118,18 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- Use a protected call so we don't error out on first use --
+-- Use a protected call so we don't error out on first use
 local status_ok, lazy = pcall(require, 'lazy')
 if not status_ok then
     return
 end
 
+local isWindows = vim.loop.os_uname().sysname == "Windows";
+
 lazy.setup({
     spec = {
-        { 
-            'ellisonleao/gruvbox.nvim',
-            config = function()
-                vim.cmd.colorscheme("gruvbox")
-                vim.cmd.highlight("clear SignColumn")
-                vim.cmd.highlight("link DiagnosticSignError DiagnosticError")
-                vim.cmd.highlight("link DiagnosticSignWarn DiagnosticWarn")
-                vim.cmd.highlight("link DiagnosticSignInfo DiagnosticInfo")
-                vim.cmd.highlight("link DiagnosticSignHint DiagnosticHint")
-            end
-        },
+        { 'ellisonleao/gruvbox.nvim', },
+        { 'rebelot/kanagawa.nvim', },
         { 
             'tpope/vim-fugitive',
             config = function()
@@ -221,6 +229,7 @@ lazy.setup({
         },
         {
             "github/copilot.vim",
+            enabled = isWindows,
             config = function()
                 vim.cmd.Copilot("disable")
             end
