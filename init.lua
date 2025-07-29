@@ -2,6 +2,8 @@
 -- NVIM Config
 --
 
+local isWindows = vim.loop.os_uname().sysname == "Windows_NT"
+
 -- Set Line Numbers
 vim.opt.number = true
 
@@ -42,7 +44,7 @@ vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 
 vim.o.updatetime = 250
 
--- Diagnostics
+-- Custom Diagnostics Visualization
 vim.diagnostic.config({
   update_in_insert = false,
   virtual_text = false,
@@ -57,42 +59,6 @@ vim.diagnostic.config({
   },
 })
 
-vim.api.nvim_create_autocmd("VimEnter", {
-    callback = function()
-        vim.cmd.colorscheme("kanagawa")
-
-        vim.cmd.highlight("clear SignColumn")
-        vim.cmd.highlight("LineNr guibg=NONE")
-
-        vim.cmd.highlight("clear DiagnosticSignError")
-        vim.cmd.highlight("link DiagnosticSignError DiagnosticError")
-        vim.cmd.highlight("clear DiagnosticSignWarn")
-        vim.cmd.highlight("link DiagnosticSignWarn DiagnosticWarn")
-        vim.cmd.highlight("clear DiagnosticSignInfo")
-        vim.cmd.highlight("link DiagnosticSignInfo DiagnosticInfo")
-        vim.cmd.highlight("clear DiagnosticSignHint")
-        vim.cmd.highlight("link DiagnosticSignHint DiagnosticHint")
-    end,
-})
-
--- Floating panel on error hover
-vim.api.nvim_create_autocmd({"CursorHold", "CursorHoldI"}, {
-    callback = function()
-        vim.diagnostic.open_float(nil, {focus=false})
-    end
-})
-
--- 80 char limit in C files
-vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"}, {
-    pattern = { 
-        "C:/Users/griffinS/git/Xbox.AccessoriesFirmware/src/XboxGameControllerDriver/*.c",
-        "C:/Users/griffinS/git/Xbox.AccessoriesFirmware/src/XboxGameControllerDriver/*.h",
-        "C:/os/src/gamecore/xbc/net/xvn/xvnpf/*.c",
-        "C:/os/src/gamecore/xbc/net/xvn/xvnpf/*.h"
-    },
-    command = "match Error /\\%80v.\\+/",
-})
-
 -- Set Leader Key
 local map = vim.api.nvim_set_keymap
 local silent = { silent = true, noremap = true }
@@ -102,7 +68,6 @@ vim.g.maplocalleader = " "
 
 -- Keybinding for File Explorer
 vim.keymap.set("n", "<C-n>", vim.cmd.Ex)
-
 
 -- Bootstrap Plugin Manager
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -123,8 +88,6 @@ local status_ok, lazy = pcall(require, 'lazy')
 if not status_ok then
     return
 end
-
-local isWindows = vim.loop.os_uname().sysname == "Windows";
 
 lazy.setup({
     spec = {
@@ -221,10 +184,10 @@ lazy.setup({
             },
             config = function()
                 local lspconfig = require('lspconfig')
-                local capabilities = require('blink.cmp').get_lsp_capabilities()
+                local blink_capabilities = require('blink.cmp').get_lsp_capabilities()
 
-                lspconfig.clangd.setup({ capabilitiies = capabilities })
-                lspconfig.rust_analyzer.setup({ capabilities = capabilities })
+                lspconfig.clangd.setup({ capabilitiies = blink_capabilities })
+                lspconfig.rust_analyzer.setup({ capabilities = blink_capabilities })
             end
         },
         {
@@ -235,5 +198,60 @@ lazy.setup({
             end
         }
     }
+})
+
+-- Setup custom highlighting on nvim start.
+vim.api.nvim_create_autocmd("VimEnter", {
+    callback = function()
+        vim.cmd.colorscheme("kanagawa")
+
+        vim.cmd.highlight("clear SignColumn")
+        vim.cmd.highlight("LineNr guibg=NONE")
+
+        vim.cmd.highlight("clear DiagnosticSignError")
+        vim.cmd.highlight("link DiagnosticSignError DiagnosticError")
+        vim.cmd.highlight("clear DiagnosticSignWarn")
+        vim.cmd.highlight("link DiagnosticSignWarn DiagnosticWarn")
+        vim.cmd.highlight("clear DiagnosticSignInfo")
+        vim.cmd.highlight("link DiagnosticSignInfo DiagnosticInfo")
+        vim.cmd.highlight("clear DiagnosticSignHint")
+        vim.cmd.highlight("link DiagnosticSignHint DiagnosticHint")
+    end,
+})
+
+-- Floating panel on error hover
+vim.api.nvim_create_autocmd({"CursorHold", "CursorHoldI"}, {
+    callback = function()
+        vim.diagnostic.open_float(nil, {focus=false})
+    end
+})
+
+-- 80 char limit in C files
+vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"}, {
+    pattern = {
+        "C:/Users/griffinS/git/Xbox.AccessoriesFirmware/src/XboxGameControllerDriver/*.c",
+        "C:/Users/griffinS/git/Xbox.AccessoriesFirmware/src/XboxGameControllerDriver/*.h",
+        "C:/os/src/gamecore/xbc/net/xvn/xvnpf/*.c",
+        "C:/os/src/gamecore/xbc/net/xvn/xvnpf/*.h"
+    },
+    command = "match Error /\\%80v.\\+/",
+})
+
+-- Enable Copilot for work files.
+vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"}, {
+    pattern = {
+        "*",
+    },
+    callback = function()
+        vim.cmd.Copilot("disable")
+    end
+})
+vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"}, {
+    pattern = {
+        "C:/os/src/gamecore/xbc/*",
+    },
+    callback = function()
+        vim.cmd.Copilot("enable")
+    end
 })
 
