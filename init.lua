@@ -200,13 +200,6 @@ lazy.setup({
                 lspconfig.pyright.setup({ capabilities = blink_capabilities })
                 lspconfig.rust_analyzer.setup({ capabilities = blink_capabilities })
             end
-        },
-        {
-            "github/copilot.vim",
-            enabled = isWindows,
-            config = function()
-                vim.cmd.Copilot("disable")
-            end
         }
     }
 })
@@ -227,6 +220,8 @@ vim.api.nvim_create_autocmd("VimEnter", {
         vim.cmd.highlight("link DiagnosticSignInfo DiagnosticInfo")
         vim.cmd.highlight("clear DiagnosticSignHint")
         vim.cmd.highlight("link DiagnosticSignHint DiagnosticHint")
+
+        vim.cmd.setlocal("spell spelllang=en_us")
     end,
 })
 
@@ -246,25 +241,5 @@ vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"}, {
         "C:/os/src/gamecore/xbc/net/xvn/xvnpf/*.h"
     },
     command = "match @comment.error /\\%80v.\\+/",
-})
-
--- Enable Copilot for work files.
-vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"}, {
-    pattern = {
-        "*",
-    },
-    callback = function()
-        if (isWindows) then
-            vim.cmd.Copilot("disable")
-        end
-    end
-})
-vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"}, {
-    pattern = {
-        "C:/os/src/gamecore/xbc/*",
-    },
-    callback = function()
-        vim.cmd.Copilot("enable")
-    end
 })
 
