@@ -67,7 +67,7 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 -- Keybinding for File Explorer
-vim.keymap.set("n", "<C-n>", vim.cmd.Ex)
+vim.keymap.set("n", "<C-n>", vim.cmd.Oil)
 
 -- Bootstrap Plugin Manager
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -99,6 +99,14 @@ lazy.setup({
                 vim.keymap.set("n", "<leader>git", '<cmd>below G<cr>')
             end
         },
+	{
+            'stevearc/oil.nvim',
+            opts = {},
+            dependencies = { 'nvim-tree/nvim-web-devicons' },
+            config = function()
+                require("oil").setup()
+            end
+    	},
         { 
             'petertriho/nvim-scrollbar',
             config = function()
@@ -187,6 +195,7 @@ lazy.setup({
                 local blink_capabilities = require('blink.cmp').get_lsp_capabilities()
 
                 lspconfig.clangd.setup({ capabilitiies = blink_capabilities })
+                lspconfig.pyright.setup({ capabilities = blink_capabilities })
                 lspconfig.rust_analyzer.setup({ capabilities = blink_capabilities })
             end
         },
@@ -243,7 +252,9 @@ vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"}, {
         "*",
     },
     callback = function()
-        vim.cmd.Copilot("disable")
+        if (isWindows) then
+            vim.cmd.Copilot("disable")
+        end
     end
 })
 vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"}, {
