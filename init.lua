@@ -66,8 +66,10 @@ map("", "<Space>", "<Nop>", silent)
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
--- Keybinding for File Explorer
-vim.keymap.set("n", "<C-n>", vim.cmd.Oil)
+vim.keymap.set('n', '<C-n>', 
+    function()
+        vim.cmd((vim.bo.filetype == 'oil') and 'bd' or 'Oil')
+    end)
 
 -- Bootstrap Plugin Manager
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
