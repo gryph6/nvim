@@ -101,7 +101,7 @@ lazy.setup({
                 vim.keymap.set("n", "<leader>git", '<cmd>below G<cr>')
             end
         },
-	{
+        {
             'stevearc/oil.nvim',
             opts = {},
             dependencies = { 'nvim-tree/nvim-web-devicons' },
@@ -113,6 +113,14 @@ lazy.setup({
             'petertriho/nvim-scrollbar',
             config = function()
                 require("scrollbar").setup()
+            end
+        },
+        {
+            'karb94/neoscroll.nvim',
+            config = function()
+                require("neoscroll").setup({
+                    duration_multiplier = 0.0001,
+                })
             end
         },
         { 
