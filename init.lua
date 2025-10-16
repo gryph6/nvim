@@ -2,8 +2,6 @@
 -- NVIM Config
 --
 
-local isWindows = vim.loop.os_uname().sysname == "Windows_NT"
-
 -- Set Line Numbers
 vim.opt.number = true
 
@@ -115,14 +113,6 @@ lazy.setup({
                 require("scrollbar").setup()
             end
         },
-        {
-            'karb94/neoscroll.nvim',
-            config = function()
-                require("neoscroll").setup({
-                    duration_multiplier = 0.0001,
-                })
-            end
-        },
         { 
             'nvim-treesitter/nvim-treesitter',
             config = function()
@@ -172,9 +162,11 @@ lazy.setup({
         },
         {
             'saghen/blink.cmp',
-            version = 'v0.*',
+            version = 'v1.*',
             config = function()
-                require('blink.cmp').setup({
+                local blink = require('blink.cmp')
+
+                blink.setup({
                     keymap = { 
                         preset = 'default' 
                     },
@@ -193,20 +185,18 @@ lazy.setup({
                         }
                     }
                 })
-            end
-        },
-        {
-            "neovim/nvim-lspconfig",
-            dependencies = {
-              'saghen/blink.cmp',
-            },
-            config = function()
-                local lspconfig = require('lspconfig')
-                local blink_capabilities = require('blink.cmp').get_lsp_capabilities()
 
-                lspconfig.clangd.setup({ capabilitiies = blink_capabilities })
-                lspconfig.pyright.setup({ capabilities = blink_capabilities })
-                lspconfig.rust_analyzer.setup({ capabilities = blink_capabilities })
+                local blink_capabilities = blink.get_lsp_capabilities()
+                
+                vim.lsp.config("*", {
+                    capabilities = blink_capabilities 
+                })
+
+                vim.lsp.enable({
+                    "clangd",
+                    "pyright",
+                    "rust_analyzer"
+                })
             end
         }
     }
@@ -215,7 +205,8 @@ lazy.setup({
 -- Setup custom highlighting on nvim start.
 vim.api.nvim_create_autocmd("VimEnter", {
     callback = function()
-        vim.cmd.colorscheme("kanagawa")
+        vim.cmd.colorscheme("gruvbox")
+        -- vim.cmd.colorscheme("kanagawa")
 
         vim.cmd.highlight("clear SignColumn")
         vim.cmd.highlight("LineNr guibg=NONE")
