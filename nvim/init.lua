@@ -94,9 +94,15 @@ lazy.setup({
         { 'ellisonleao/gruvbox.nvim', },
         { 'rebelot/kanagawa.nvim', },
         { 
-            'tpope/vim-fugitive',
+            'sindrets/diffview.nvim',
             config = function()
-                vim.keymap.set("n", "<leader>git", '<cmd>below G<cr>')
+                vim.keymap.set("n", "<leader>gd", function()
+                    if next(require('diffview.lib').views) == nil then
+                        vim.cmd('DiffviewOpen')
+                    else
+                        vim.cmd('DiffviewClose')
+                    end
+                end)
             end
         },
         {
@@ -196,11 +202,27 @@ lazy.setup({
                     capabilities = blink_capabilities,
                     cmd = { "gopls" },
                     filetypes = { "go" },
-                    root_markers = { "go.mod" }
+                    root_markers = { "go.mod", ".git" }
+                })
+
+                vim.lsp.config("typescript-language-server", {
+                    capabilities = blink_capabilities,
+                    cmd = { "typescript-language-server", "--stdio" },
+                    filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
+                    root_markers = { "tsconfig.json", "package.json", "jsconfig.json", ".git" }
+                })
+
+                vim.lsp.config("sourcekit", {
+                    capabilities = blink_capabilities,
+                    cmd = { "sourcekit-lsp" },
+                    filetypes = { "swift" },
+                    root_markers = { ".git" }
                 })
 
                 vim.lsp.enable({
-                    "gopls"
+                    "gopls",
+                    "sourcekit",
+                    "typescript-language-server"
                 })
             end
         }
@@ -210,8 +232,8 @@ lazy.setup({
 -- Setup custom highlighting on nvim start.
 vim.api.nvim_create_autocmd("VimEnter", {
     callback = function()
-        -- vim.cmd.colorscheme("gruvbox")
-        vim.cmd.colorscheme("kanagawa")
+        vim.cmd.colorscheme("gruvbox")
+        -- vim.cmd.colorscheme("kanagawa")
 
         vim.cmd.highlight("clear SignColumn")
         vim.cmd.highlight("LineNr guibg=NONE")
