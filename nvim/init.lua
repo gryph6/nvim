@@ -123,10 +123,18 @@ lazy.setup({
                 require("scrollbar").setup()
             end
         },
-        { 
+        {
             'nvim-treesitter/nvim-treesitter',
             config = function()
                 require("nvim-treesitter").setup()
+            end
+        },
+        {
+            'nvim-treesitter/nvim-treesitter-context',
+            config = function()
+                require('treesitter-context').setup({
+                    max_lines = 3,
+                })
             end
         },
         { 
