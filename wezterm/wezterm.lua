@@ -12,7 +12,7 @@ config.tab_bar_at_bottom = true
 config.use_fancy_tab_bar = false
 config.hide_tab_bar_if_only_one_tab = true
 
-config.font = wezterm.font "Blex Mono Nerd Font"
+config.font = wezterm.font "BlexMono Nerd Font"
 
 return config
 
