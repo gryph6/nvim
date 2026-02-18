@@ -2,6 +2,9 @@
 -- NVIM Config
 --
 
+-- Disable Editorconfig
+vim.g.editorconfig = false
+
 -- Set Line Numbers
 vim.opt.number = true
 
@@ -236,6 +239,7 @@ lazy.setup({
         },
         {
             'nvim-orgmode/orgmode',
+            enabled = false,
             event = 'VeryLazy',
             ft = { 'org' },
             config = function()
