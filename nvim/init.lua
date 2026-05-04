@@ -100,11 +100,16 @@ lazy.setup({
             'sindrets/diffview.nvim',
             config = function()
                 vim.keymap.set("n", "<leader>gd", function()
-                    if next(require('diffview.lib').views) == nil then
-                        vim.cmd('DiffviewOpen')
-                    else
-                        vim.cmd('DiffviewClose')
-                    end
+                    vim.cmd('DiffviewClose')
+                    vim.cmd('DiffviewOpen')
+                end)
+                vim.keymap.set("n", "<leader>gdb", function()
+                    vim.ui.input({ prompt = "Base branch: ", default = "origin/main" }, function(branch)
+                        if branch and branch ~= "" then
+                            vim.cmd('DiffviewClose')
+                            vim.cmd('DiffviewOpen ' .. branch .. '...HEAD')
+                        end
+                    end)
                 end)
             end
         },
