@@ -96,22 +96,100 @@ lazy.setup({
     spec = {
         { 'ellisonleao/gruvbox.nvim', },
         { 'rebelot/kanagawa.nvim', },
-        { 
-            'sindrets/diffview.nvim',
-            config = function()
-                vim.keymap.set("n", "<leader>gd", function()
-                    vim.cmd('DiffviewClose')
-                    vim.cmd('DiffviewOpen')
-                end)
-                vim.keymap.set("n", "<leader>gdb", function()
-                    vim.ui.input({ prompt = "Base branch: ", default = "origin/main" }, function(branch)
-                        if branch and branch ~= "" then
-                            vim.cmd('DiffviewClose')
-                            vim.cmd('DiffviewOpen ' .. branch .. '...HEAD')
-                        end
-                    end)
-                end)
-            end
+        {
+            'esmuellert/codediff.nvim',
+            cmd = 'CodeDiff',
+            opts = {
+                highlights = {
+                    line_insert = '#1f2d20',
+                    line_delete = '#351d1d',
+                    char_insert = '#2a3b24',
+                    char_delete = '#462323',
+                },
+                diff = {
+                    layout = 'inline',
+                    compact = true,
+                    compact_context_lines = 10,
+                },
+                explorer = {
+                    view_mode = 'tree',
+                    focus_on_select = true,
+                },
+            },
+            keys = {
+                {
+                    '<leader>gd',
+                    '<cmd>CodeDiff<cr>',
+                    desc = 'Open git diff',
+                },
+                {
+                    '<leader>gdb',
+                    function()
+                        vim.ui.input({ prompt = 'Base branch: ', default = 'origin/main' }, function(branch)
+                            if branch and branch ~= '' then
+                                vim.api.nvim_cmd({ cmd = 'CodeDiff', args = { branch } }, {})
+                            end
+                        end)
+                    end,
+                    desc = 'Diff against base branch',
+                },
+            },
+        },
+        {
+            'daliusd/ghlite.nvim',
+            dependencies = { 'lewis6991/async.nvim' },
+            cmd = {
+                'GHLitePRList',
+                'GHLitePRSelect',
+                'GHLitePRCheckout',
+                'GHLitePRView',
+                'GHLitePRLoadComments',
+                'GHLitePRDiff',
+                'GHLitePRDiffview',
+                'GHLitePRAddComment',
+                'GHLitePRUpdateComment',
+                'GHLitePRDeleteComment',
+                'GHLitePRResolveComment',
+                'GHLitePRUnresolveComment',
+                'GHLitePROpenComment',
+            },
+            opts = {
+                diff_tool = 'codediff',
+                comment_hunk = true,
+            },
+            keys = {
+                {
+                    '<leader>gpl',
+                    '<cmd>GHLitePRLoadComments<cr>',
+                    desc = 'Load PR feedback',
+                },
+                {
+                    '<leader>gpv',
+                    '<cmd>GHLitePRView<cr>',
+                    desc = 'View pull request',
+                },
+                {
+                    '<leader>gpd',
+                    '<cmd>GHLitePRDiffview<cr>',
+                    desc = 'Open PR in CodeDiff',
+                },
+                {
+                    '<leader>gpa',
+                    '<cmd>GHLitePRAddComment<cr>',
+                    mode = { 'n', 'x' },
+                    desc = 'Reply to PR feedback',
+                },
+                {
+                    '<leader>gpr',
+                    '<cmd>GHLitePRResolveComment<cr>',
+                    desc = 'Resolve PR feedback',
+                },
+                {
+                    '<leader>gpR',
+                    '<cmd>GHLitePRUnresolveComment<cr>',
+                    desc = 'Reopen PR feedback',
+                },
+            },
         },
         {
             'stevearc/oil.nvim',
@@ -235,7 +313,15 @@ lazy.setup({
                     root_markers = { ".git" }
                 })
 
+                vim.lsp.config("clangd", {
+                    capabilities = blink_capabilities,
+                    cmd = { "clangd", "--background-index" },
+                    filetypes = { "c", "cpp" },
+                    root_markers = { "compile_commands.json", ".clangd", ".git" }
+                })
+
                 vim.lsp.enable({
+                    "clangd",
                     "gopls",
                     "sourcekit",
                     "typescript-language-server"
@@ -304,4 +390,3 @@ vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"}, {
     },
     command = "match @comment.error /\\%80v.\\+/",
 })
-
