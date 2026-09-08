@@ -291,6 +291,13 @@ lazy.setup({
                 })
 
                 local blink_capabilities = blink.get_lsp_capabilities()
+
+                vim.lsp.config("clangd", {
+                    capabilities = blink_capabilities,
+                    cmd = { "clangd", "--background-index" },
+                    filetypes = { "c", "cpp" },
+                    root_markers = { "compile_commands.json", ".clangd", ".git" }
+	    	})
                 
                 vim.lsp.config("gopls", {
                     capabilities = blink_capabilities,
@@ -299,11 +306,28 @@ lazy.setup({
                     root_markers = { "go.mod", ".git" }
                 })
 
-                vim.lsp.config("typescript-language-server", {
+                vim.lsp.config("pyright", {
                     capabilities = blink_capabilities,
-                    cmd = { "typescript-language-server", "--stdio" },
-                    filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
-                    root_markers = { "tsconfig.json", "package.json", "jsconfig.json", ".git" }
+                    cmd = { "pyright-langserver", "--stdio" },
+                    filetypes = { "python" },
+                    root_markers = {
+                        "pyproject.toml",
+                        "setup.py",
+                        "setup.cfg",
+                        "requirements.txt",
+                        "Pipfile",
+                        "pyrightconfig.json",
+                        ".git"
+                    },
+                    settings = {
+                        python = {
+                            analysis = {
+                                autoSearchPaths = true,
+                                useLibraryCodeForTypes = true,
+                                diagnosticMode = "openFilesOnly",
+                            }
+                        }
+                    }
                 })
 
                 vim.lsp.config("sourcekit", {
@@ -313,16 +337,17 @@ lazy.setup({
                     root_markers = { ".git" }
                 })
 
-                vim.lsp.config("clangd", {
+                vim.lsp.config("typescript-language-server", {
                     capabilities = blink_capabilities,
-                    cmd = { "clangd", "--background-index" },
-                    filetypes = { "c", "cpp" },
-                    root_markers = { "compile_commands.json", ".clangd", ".git" }
+                    cmd = { "typescript-language-server", "--stdio" },
+                    filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
+                    root_markers = { "tsconfig.json", "package.json", "jsconfig.json", ".git" }
                 })
 
                 vim.lsp.enable({
                     "clangd",
                     "gopls",
+                    "pyright",
                     "sourcekit",
                     "typescript-language-server"
                 })
@@ -330,23 +355,40 @@ lazy.setup({
         },
         {
             'nvim-orgmode/orgmode',
-            enabled = false,
             event = 'VeryLazy',
             ft = { 'org' },
             config = function()
-            -- Setup orgmode
-            require('orgmode').setup({
-                org_agenda_files = '~/orgfiles/**/*',
-              org_default_notes_file = '~/orgfiles/refile.org',
-            })
+                require('orgmode').setup({
+                    org_agenda_files = '~/orgfiles/**/*',
+                    org_default_notes_file = '~/orgfiles/refile.org',
 
-            -- NOTE: If you are using nvim-treesitter with ~ensure_installed = "all"~ option
-            -- add ~org~ to ignore_install
-            -- require('nvim-treesitter.configs').setup({
-            --   ensure_installed = 'all',
-            --   ignore_install = { 'org' },
-            -- })
-          end,
+                    -- Custom agenda views, opened with <leader>oa then the key.
+                    org_agenda_custom_commands = {
+                        d = {
+                            description = 'Today',
+                            types = {
+                                {
+                                    type = 'agenda',
+                                    org_agenda_span = 'day',
+                                    org_agenda_overriding_header = "Today's schedule",
+                                },
+                                {
+                                    type = 'tags_todo',
+                                    match = '+PRIORITY="A"',
+                                    org_agenda_overriding_header = 'High priority',
+                                },
+                                {
+                                    type = 'tags_todo',
+                                    org_agenda_overriding_header = 'Unscheduled (no date set)',
+                                    org_agenda_todo_ignore_scheduled = 'all',
+                                    org_agenda_todo_ignore_deadlines = 'all',
+                                    org_agenda_sorting_strategy = { 'priority-down', 'category-keep' },
+                                },
+                            },
+                        },
+                    },
+                })
+            end,
         }
     }
 })
